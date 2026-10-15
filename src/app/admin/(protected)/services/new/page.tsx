@@ -1,5 +1,5 @@
-import { listBusinesses } from '@/app/admin/businesses/actions';
-import { ServiceForm } from '@/app/admin/services/ClientComponents';
+import { listBusinesses } from '../../businesses/actions';
+import { ServiceForm } from '../ClientComponents';
 
 export const instant = false;
 
