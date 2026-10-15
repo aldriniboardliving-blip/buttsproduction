@@ -27,7 +27,7 @@ export function ContentFilters({
           name="search"
           defaultValue={search}
           placeholder={placeholder}
-          className="h-10 w-full rounded-lg border border-neutral-300 bg-white px-3 text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-2 focus:outline-offset-1 focus:outline-primary-500"
+          className="h-10 w-full rounded-lg border border-neutral-300 bg-white px-3 text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-2 focus:outline-offset-1 focus:outline-primary-700"
         />
       </div>
 
@@ -39,7 +39,7 @@ export function ContentFilters({
           id="content-published"
           name="published"
           defaultValue={published}
-          className="h-10 rounded-lg border border-neutral-300 bg-white px-3 text-sm text-neutral-900 focus:outline-2 focus:outline-offset-1 focus:outline-primary-500"
+          className="h-10 rounded-lg border border-neutral-300 bg-white px-3 text-sm text-neutral-900 focus:outline-2 focus:outline-offset-1 focus:outline-primary-700"
         >
           <option value="all">All statuses</option>
           <option value="true">Published</option>

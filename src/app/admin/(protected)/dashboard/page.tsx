@@ -127,7 +127,7 @@ export default async function AdminDashboard() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {cards.map((card) => (
               <Link key={card.label} href={card.href} className="group">
-                <Card bordered className="transition-colors group-hover:border-primary-300">
+                <Card bordered className="transition-colors group-hover:border-primary-400">
                   <p className="text-sm text-neutral-600">{card.label}</p>
                   <p className="mt-1 text-3xl font-bold text-neutral-900 tabular-nums">
                     {card.total}

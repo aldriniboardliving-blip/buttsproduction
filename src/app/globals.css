@@ -2,32 +2,36 @@
 
 /* ============================================================
    Butts Productions — Design System
-   Direction: dark cinematic luxury meets earthy sophistication
+   Direction: dark cinematic canvas, light blue accent, warm sand
    ============================================================ */
 
 @theme {
   /* ---- Brand palette ---- */
-  --color-ink: #171916;
-  --color-surface: #20231f;
-  --color-forest: #344438;
+  /* Base surfaces are dark and near-neutral; the accent is a light blue that
+     reads clearly against them without needing a light theme. */
+  --color-ink: #14161b;
+  --color-surface: #1b1e26;
+  --color-azure: #2e90d4;
   --color-sand: #d5b98a;
   --color-ivory: #f2eee5;
   --color-stone: #a7a89f;
   --color-line: rgb(242 238 229 / 0.12);
   --color-line-strong: rgb(242 238 229 / 0.22);
 
-  /* Forest-derived ramp. Replaces the stock blue while keeping the
-     `primary-*` utilities the admin UI already depends on. */
-  --color-primary-50: #f2f4f1;
-  --color-primary-100: #e3e8e2;
-  --color-primary-200: #c7d0c3;
-  --color-primary-300: #9faf9c;
-  --color-primary-400: #6f8570;
-  --color-primary-500: #4e6653;
-  --color-primary-600: #344438;
-  --color-primary-700: #2a3830;
-  --color-primary-800: #212c26;
-  --color-primary-900: #1a221e;
+  /* Light-blue ramp. Drives every accent in both the public site and the
+     admin UI, so a single edit here re-themes the whole product.
+     600 is the brand colour; 500/400 sit lighter so buttons using dark
+     text can lighten on hover instead of darkening. */
+  --color-primary-50: #f0f9fe;
+  --color-primary-100: #def3fd;
+  --color-primary-200: #bce7fb;
+  --color-primary-300: #8ad4f6;
+  --color-primary-400: #55bdee;
+  --color-primary-500: #45b0e6;
+  --color-primary-600: #2e90d4;
+  --color-primary-700: #2674ae;
+  --color-primary-800: #1f5c8b;
+  --color-primary-900: #194970;
 
   /* ---- Editorial type scale ---- */
   --text-overline: 0.6875rem;
@@ -175,18 +179,20 @@
 }
 
 /* Soft directional light wash. Provides atmosphere instead of
-   a flat colour block. */
+   a flat colour block. Colours reference the theme tokens so the
+   palette stays editable from one place. Alpha is kept low because a
+   light accent reads far stronger than a dark one at the same value. */
 @utility wash {
   background-image:
     radial-gradient(
       120% 90% at 12% 0%,
-      rgb(52 68 56 / 0.55) 0%,
-      rgb(52 68 56 / 0) 60%
+      color-mix(in oklab, var(--color-primary-600) 26%, transparent) 0%,
+      transparent 60%
     ),
     radial-gradient(
       80% 70% at 92% 100%,
-      rgb(213 185 138 / 0.14) 0%,
-      rgb(213 185 138 / 0) 65%
+      color-mix(in oklab, var(--color-sand) 12%, transparent) 0%,
+      transparent 65%
     );
 }
 
@@ -194,13 +200,13 @@
   background-image:
     radial-gradient(
       100% 80% at 8% 0%,
-      rgb(52 68 56 / 0.85) 0%,
-      rgb(52 68 56 / 0) 58%
+      color-mix(in oklab, var(--color-primary-600) 42%, transparent) 0%,
+      transparent 58%
     ),
     radial-gradient(
       70% 60% at 88% 96%,
-      rgb(213 185 138 / 0.22) 0%,
-      rgb(213 185 138 / 0) 60%
+      color-mix(in oklab, var(--color-sand) 20%, transparent) 0%,
+      transparent 60%
     );
 }
 

@@ -117,7 +117,7 @@ export function FormSection({
 }
 
 const fieldBase =
-  'w-full rounded-lg border bg-white px-3 py-2 text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-2 focus:outline-offset-1 focus:outline-primary-500';
+  'w-full rounded-lg border bg-white px-3 py-2 text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-2 focus:outline-offset-1 focus:outline-primary-700';
 
 export function Field({
   name,
@@ -241,7 +241,7 @@ export function CheckboxField({
         type="checkbox"
         name={name}
         defaultChecked={defaultChecked}
-        className="mt-0.5 h-4 w-4 rounded border-neutral-300 text-primary-600 focus:outline-primary-500"
+        className="mt-0.5 h-4 w-4 rounded border-neutral-300 text-primary-700 focus:outline-primary-700"
       />
       <span>
         {label}
@@ -275,7 +275,7 @@ export function CheckboxGroup({
               name={name}
               value={option.value}
               defaultChecked={defaultValues?.includes(option.value)}
-              className="h-4 w-4 rounded border-neutral-300 text-primary-600 focus:outline-primary-500"
+              className="h-4 w-4 rounded border-neutral-300 text-primary-700 focus:outline-primary-700"
             />
             {option.label}
           </label>

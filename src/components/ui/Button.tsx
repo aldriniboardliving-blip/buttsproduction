@@ -5,8 +5,10 @@ export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'dan
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 const variantStyles: Record<ButtonVariant, string> = {
+  // The brand accent is a light blue, so solid fills take dark text and
+  // lighten on hover rather than darkening.
   primary:
-    'bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800 disabled:bg-primary-300',
+    'bg-primary-600 text-ink hover:bg-primary-500 active:bg-primary-400 disabled:bg-primary-300',
   secondary:
     'bg-neutral-100 text-neutral-900 hover:bg-neutral-200 active:bg-neutral-300 disabled:bg-neutral-50 disabled:text-neutral-400',
   outline:

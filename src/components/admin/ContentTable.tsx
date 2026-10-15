@@ -120,7 +120,7 @@ export function ContentTable({
                   <td className="px-4 py-3">
                     <Link
                       href={hrefFor(row.id)}
-                      className="font-medium text-neutral-900 hover:text-primary-600"
+                      className="font-medium text-neutral-900 hover:text-primary-700"
                     >
                       {row.title}
                     </Link>

@@ -38,11 +38,15 @@ export function DivisionPlate({
   const initials = initialsFor(name);
   const v = ((variant % 4) + 4) % 4;
 
+  // Each variant is one directional light wash. They read the theme token so
+  // the plate follows the palette. Alpha is low because a light accent reads
+  // much stronger than a dark one at the same value.
+  const azure = 'var(--color-primary-600)';
   const washPosition = [
-    'radial-gradient(90% 70% at 18% 12%, rgb(52 68 56 / 0.72) 0%, rgb(52 68 56 / 0) 62%)',
-    'radial-gradient(90% 70% at 84% 88%, rgb(52 68 56 / 0.66) 0%, rgb(52 68 56 / 0) 60%)',
-    'radial-gradient(70% 90% at 50% 100%, rgb(52 68 56 / 0.6) 0%, rgb(52 68 56 / 0) 66%)',
-    'radial-gradient(80% 70% at 90% 10%, rgb(52 68 56 / 0.68) 0%, rgb(52 68 56 / 0) 60%)',
+    `radial-gradient(90% 70% at 18% 12%, color-mix(in oklab, ${azure} 32%, transparent) 0%, transparent 62%)`,
+    `radial-gradient(90% 70% at 84% 88%, color-mix(in oklab, ${azure} 28%, transparent) 0%, transparent 60%)`,
+    `radial-gradient(70% 90% at 50% 100%, color-mix(in oklab, ${azure} 26%, transparent) 0%, transparent 66%)`,
+    `radial-gradient(80% 70% at 90% 10%, color-mix(in oklab, ${azure} 30%, transparent) 0%, transparent 60%)`,
   ][v];
 
   const monogramPosition = [

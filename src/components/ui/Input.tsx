@@ -26,7 +26,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           className={cn(
             'w-full h-10 px-3 rounded-lg border text-base transition-colors',
             'bg-white text-neutral-900 placeholder:text-neutral-400',
-            'focus:outline-2 focus:outline-offset-1 focus:outline-primary-500',
+            'focus:outline-2 focus:outline-offset-1 focus:outline-primary-700',
             'disabled:bg-neutral-100 disabled:text-neutral-400 disabled:cursor-not-allowed',
             error
               ? 'border-red-500 focus:outline-red-500'
