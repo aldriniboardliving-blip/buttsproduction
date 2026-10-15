@@ -2,67 +2,75 @@ import type { Metadata } from 'next';
 import { PageHero } from '@/components/public/PageHero';
 import { SectionLabel } from '@/components/public/SectionLabel';
 import { Cta } from '@/components/public/Cta';
+import { getPublishedFaqs } from '@/server/queries/content';
 import { Reveal, RevealGroup, RevealItem } from '@/components/motion/Reveal';
 
-export const metadata: Metadata = {
-  title: 'FAQs',
-  description:
-    'Answers to the questions we are asked most often about car rental, cleaning, print, dispatching and entertainment services.',
-  alternates: { canonical: '/faq' },
-};
+export const instant = false;
 
-const FAQS = [
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: 'FAQs',
+    description:
+      'Answers to the questions we are asked most often about car rental, cleaning, print, dispatching and entertainment services.',
+    alternates: { canonical: '/faq' },
+  };
+}
+
+/** Used until real FAQs are published in the admin. */
+const FALLBACK_FAQS = [
   {
-    q: 'What do I need to rent a car?',
-    a: "You’ll need a valid driver’s licence — usually held for at least twelve months — a credit or debit card in the renter’s name, proof of identity such as a passport for international renters, and you must meet the minimum age requirement.",
+    id: 'fb-1',
+    question: 'What do I need to rent a car?',
+    answer:
+      'A valid driver’s licence — usually held for at least twelve months — a credit or debit card in the renter’s name, proof of identity, and you must meet the minimum age requirement.',
   },
   {
-    q: 'What is the minimum age to rent?',
-    a: 'Twenty-one. Drivers under twenty-five may pay a young driver fee on some vehicles.',
+    id: 'fb-2',
+    question: 'What is the minimum age to rent?',
+    answer: 'Twenty-one. Drivers under twenty-five may pay a young driver fee on some vehicles.',
   },
   {
-    q: 'Is insurance included?',
-    a: 'No. We offer insurance as a refundable add-on of one hundred dollars, or you can supply your own cover — the choice is yours at the time of booking.',
+    id: 'fb-3',
+    question: 'Is insurance included?',
+    answer:
+      'No. We offer insurance as a refundable add-on of one hundred dollars, or you can supply your own cover — the choice is yours at the time of booking.',
   },
   {
-    q: 'Can I rent with a prepaid card?',
-    a: 'No — we need a bank card in the renter’s name, and a larger deposit applies.',
+    id: 'fb-4',
+    question: 'What fuel policy do you use?',
+    answer:
+      'Full-to-full. Please return the vehicle with a full tank; the fuel gauge at collection is recorded with the renter.',
   },
   {
-    q: 'What fuel policy do you use?',
-    a: 'Full-to-full. Please return the vehicle with a full tank; the fuel gauge at collection is recorded with the renter.',
+    id: 'fb-5',
+    question: 'Can I return the car to a different location?',
+    answer: 'No. The vehicle must be returned to the pick-up location.',
   },
   {
-    q: 'Can I return the car to a different location?',
-    a: 'No. The vehicle must be returned to the pick-up location.',
+    id: 'fb-6',
+    question: 'Is there a mileage limit?',
+    answer:
+      'Yes — one hundred and fifty miles per day is included. Excess mileage fees may apply, and unlimited mileage is available for an additional charge.',
   },
   {
-    q: 'What happens if I return the car late?',
-    a: 'Late returns may incur additional hourly or daily charges. There is a fifteen-minute grace period after the scheduled pick-up time for the reservation itself.',
+    id: 'fb-7',
+    question: 'Can someone else drive the rental car?',
+    answer:
+      'Yes, but additional drivers must be listed on the rental agreement and meet the same age and licensing requirements. Extra fees may apply.',
   },
   {
-    q: 'Is there a mileage limit?',
-    a: 'Yes — one hundred and fifty miles per day is included. Excess mileage fees may apply, and unlimited mileage is available for an additional charge.',
-  },
-  {
-    q: 'Can someone else drive the rental car?',
-    a: 'Yes, but additional drivers must be listed on the rental agreement and meet the same age and licensing requirements. Extra fees may apply.',
-  },
-  {
-    q: 'Are pets allowed in the vehicle?',
-    a: 'Pets are permitted, but a cleaning fee of two hundred dollars applies to cover cleaning and sanitising the vehicle after use.',
-  },
-  {
-    q: 'What happens if I lock my keys in the car?',
-    a: 'A one hundred dollar pop-a-lock service fee applies. Please call us rather than attempting to open the vehicle yourself.',
-  },
-  {
-    q: 'Can I jump-start the vehicle if the battery dies?',
-    a: 'Please do not. Jump-starting is strictly prohibited. Contact Butts Productions headquarters or AAA roadside assistance so we can help safely — attempting repairs may incur additional fees or end the rental agreement.',
+    id: 'fb-8',
+    question: 'Are pets allowed in the vehicle?',
+    answer:
+      'Pets are permitted, but a cleaning fee of two hundred dollars applies to cover cleaning and sanitising the vehicle after use.',
   },
 ];
 
-export default function FAQPage() {
+export default async function FAQPage() {
+  const published = await getPublishedFaqs();
+  const faqs = published.length > 0 ? published : FALLBACK_FAQS;
+  const usingFallback = published.length === 0;
+
   return (
     <>
       <PageHero
@@ -84,12 +92,13 @@ export default function FAQPage() {
             <div className="lg:col-span-3">
               <div className="lg:sticky lg:top-28">
                 <Reveal>
-                  <SectionLabel index="A">{FAQS.length} answers</SectionLabel>
+                  <SectionLabel index="A">{faqs.length} answers</SectionLabel>
                 </Reveal>
                 <Reveal delay={0.08}>
                   <p className="mt-7 text-sm leading-relaxed text-stone">
-                    Most of these apply to car rental. Each service page carries
-                    its own terms in full.
+                    {usingFallback
+                      ? 'These are the standing answers for car rental. Each service page carries its own terms in full.'
+                      : 'Published from the website CMS.'}
                   </p>
                 </Reveal>
                 <Reveal delay={0.16}>
@@ -104,8 +113,8 @@ export default function FAQPage() {
 
             <div className="lg:col-span-8 lg:col-start-5">
               <RevealGroup className="divide-y divide-line border-t border-line">
-                {FAQS.map((faq, i) => (
-                  <RevealItem key={faq.q}>
+                {faqs.map((faq, i) => (
+                  <RevealItem key={faq.id}>
                     <details className="group py-7" name="faq">
                       <summary className="flex cursor-pointer list-none items-start justify-between gap-8">
                         <span className="flex gap-5">
@@ -113,7 +122,7 @@ export default function FAQPage() {
                             {String(i + 1).padStart(2, '0')}
                           </span>
                           <span className="font-display text-xl leading-snug text-ivory transition-colors duration-200 group-hover:text-sand sm:text-2xl">
-                            {faq.q}
+                            {faq.question}
                           </span>
                         </span>
                         <span
@@ -125,7 +134,7 @@ export default function FAQPage() {
                         </span>
                       </summary>
                       <p className="mt-5 max-w-2xl pl-0 leading-relaxed text-stone sm:pl-12">
-                        {faq.a}
+                        {faq.answer}
                       </p>
                     </details>
                   </RevealItem>

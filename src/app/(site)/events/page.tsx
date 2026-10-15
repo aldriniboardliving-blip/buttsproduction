@@ -2,27 +2,35 @@ import type { Metadata } from 'next';
 import { PageHero } from '@/components/public/PageHero';
 import { SectionLabel } from '@/components/public/SectionLabel';
 import { Cta } from '@/components/public/Cta';
-import { Reveal } from '@/components/motion/Reveal';
+import { getPublishedEvents } from '@/server/queries/events';
+import { Reveal, RevealGroup, RevealItem } from '@/components/motion/Reveal';
 
-export const metadata: Metadata = {
-  title: 'Events',
-  description:
-    'Community events from Butts Productions Inc., including the Make the Change campaign by The Giving BackPack Foundation.',
-  alternates: { canonical: '/events' },
-};
+export const instant = false;
 
-const EVENTS = [
-  {
-    date: '21 Mar 2026',
-    time: '8:00 AM — 12:00 PM',
-    title: 'Make the Change — Community Change Drive',
-    body: 'The Giving BackPack Foundation is proud to launch our “Make the Change” Campaign, a community effort to raise spare change that will fund a Laundry Day for the Homeless in our local community. Every coin counts — the change sitting in your car, your pockets, or your home can help provide something.',
-    location: '7506 Ave J, Norfolk, VA 23513',
-    cta: { label: 'Get involved', href: '/contact' },
-  },
-];
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: 'Events',
+    description:
+      'Community events from Butts Productions Inc., including campaigns by The Giving BackPack Foundation.',
+    alternates: { canonical: '/events' },
+  };
+}
 
-export default function EventsPage() {
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
+export default async function EventsPage() {
+  const events = await getPublishedEvents();
+
+  const live = events.filter((event) => event.phase !== 'past');
+  const past = events.filter((event) => event.phase === 'past').reverse();
+
   return (
     <>
       <PageHero
@@ -41,51 +49,97 @@ export default function EventsPage() {
       <section>
         <div className="mx-auto w-full max-w-[1536px] px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
           <Reveal>
-            <SectionLabel index="A">Upcoming &amp; recent</SectionLabel>
+            <SectionLabel index="A">
+              {live.length > 0 ? 'Upcoming & ongoing' : 'Upcoming'}
+            </SectionLabel>
           </Reveal>
 
-          <div className="mt-12 space-y-6">
-            {EVENTS.map((event) => (
-              <Reveal key={event.title}>
-                <article className="grid gap-0 border border-line lg:grid-cols-12">
-                  <div className="grain wash-strong relative isolate flex flex-col justify-center border-b border-line p-8 sm:p-12 lg:col-span-4 lg:border-r lg:border-b-0">
-                    <div className="grid-fine absolute inset-0 -z-10 opacity-50" />
-                    <p className="overline text-sand">{event.date}</p>
-                    <p className="mt-6 font-display text-4xl leading-none text-ivory tabular-nums">
-                      {event.time.split(' — ')[0]}
-                    </p>
-                    <p className="mt-2 text-sm text-stone tabular-nums">
-                      until {event.time.split(' — ')[1]}
-                    </p>
-                    <p className="mt-8 text-sm leading-relaxed text-stone">
-                      {event.location}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col justify-center p-8 sm:p-12 lg:col-span-8">
-                    <h2 className="font-display text-display-lg text-ivory">
-                      {event.title}
-                    </h2>
-                    <p className="mt-6 max-w-2xl text-lg leading-relaxed text-stone">
-                      {event.body}
-                    </p>
-                    <div className="mt-10">
-                      <Cta href={event.cta.href}>{event.cta.label}</Cta>
+          {live.length === 0 ? (
+            <Reveal delay={0.08}>
+              <p className="mt-10 max-w-2xl leading-relaxed text-stone">
+                Nothing is scheduled at the moment. Community events run
+                periodically — get in touch if you would like to be told about the
+                next one.
+              </p>
+            </Reveal>
+          ) : (
+            <div className="mt-12 space-y-6">
+              {live.map((event, i) => (
+                <Reveal key={event.id} delay={0.04 * i}>
+                  <article className="grid gap-0 border border-line lg:grid-cols-12">
+                    <div className="grain wash-strong relative isolate flex flex-col justify-center border-b border-line p-8 sm:p-12 lg:col-span-4 lg:border-r lg:border-b-0">
+                      <div className="grid-fine absolute inset-0 -z-10 opacity-50" />
+                      <p className="overline text-sand">{event.phase}</p>
+                      <p className="mt-6 font-display text-4xl leading-tight text-ivory">
+                        {formatDate(event.startDate)}
+                      </p>
+                      {event.venue && (
+                        <p className="mt-4 text-sm leading-relaxed text-stone">{event.venue}</p>
+                      )}
+                      {event.address && (
+                        <p className="mt-1 text-sm leading-relaxed text-stone">{event.address}</p>
+                      )}
                     </div>
-                  </div>
-                </article>
-              </Reveal>
-            ))}
-          </div>
+
+                    <div className="flex flex-col justify-center p-8 sm:p-12 lg:col-span-8">
+                      <h2 className="font-display text-display-lg text-ivory">{event.name}</h2>
+                      <p className="mt-6 max-w-2xl text-lg leading-relaxed text-stone">
+                        {event.description || event.shortDescription}
+                      </p>
+                      <div className="mt-10 flex flex-wrap gap-4">
+                        <Cta href={`/events/${event.slug}`}>Event details</Cta>
+                        {event.registrationUrl && (
+                          <Cta href={event.registrationUrl} variant="outline">
+                            Register
+                          </Cta>
+                        )}
+                      </div>
+                    </div>
+                  </article>
+                </Reveal>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      <section className="grain border-t border-line bg-surface">
+      {past.length > 0 && (
+        <section className="grain border-t border-line bg-surface">
+          <div className="mx-auto w-full max-w-[1536px] px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
+            <Reveal>
+              <SectionLabel index="B">Past events</SectionLabel>
+            </Reveal>
+
+            <RevealGroup className="mt-12 divide-y divide-line border-t border-line">
+              {past.map((event) => (
+                <RevealItem key={event.id}>
+                  <a
+                    href={`/events/${event.slug}`}
+                    className="group flex flex-wrap items-baseline justify-between gap-4 py-6 transition-colors hover:text-sand"
+                  >
+                    <span>
+                      <span className="block font-display text-xl text-ivory transition-colors group-hover:text-sand">
+                        {event.name}
+                      </span>
+                      <span className="mt-1 block text-sm text-stone">
+                        {formatDate(event.startDate)}
+                      </span>
+                    </span>
+                    <span className="overline text-[9px] text-stone">View details</span>
+                  </a>
+                </RevealItem>
+              ))}
+            </RevealGroup>
+          </div>
+        </section>
+      )}
+
+      <section className="border-t border-line">
         <div className="mx-auto w-full max-w-[1536px] px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
               <Reveal>
-                <SectionLabel index="B">Kleen Team Entertainment</SectionLabel>
+                <SectionLabel index="C">Kleen Team Entertainment</SectionLabel>
               </Reveal>
               <Reveal delay={0.08}>
                 <h2 className="mt-8 text-display-lg text-ivory">
@@ -98,8 +152,8 @@ export default function EventsPage() {
                 <p className="text-lg leading-relaxed text-stone">
                   Alongside DJ services from DJ PHARFETCHED and tent rentals, we
                   help run community gatherings, fundraisers and celebrations
-                  across Hampton Roads. Tell us the date and we will tell you
-                  what is possible.
+                  across Hampton Roads. Tell us the date and we will tell you what
+                  is possible.
                 </p>
               </Reveal>
               <Reveal delay={0.2}>

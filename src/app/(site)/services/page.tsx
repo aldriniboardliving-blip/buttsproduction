@@ -1,18 +1,26 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { divisions } from '@/lib/divisions';
+import { getPublicDivisions } from '@/server/queries/divisions';
 import { PageHero } from '@/components/public/PageHero';
 import { DivisionPlate } from '@/components/public/DivisionPlate';
 import { Reveal, RevealGroup, RevealItem } from '@/components/motion/Reveal';
 
-export const metadata: Metadata = {
-  title: 'Services',
-  description:
-    'Eleven divisions under one roof: janitorial services, consulting, custom print, dispatching, car rentals, entertainment and more.',
-  alternates: { canonical: '/services' },
-};
+export const instant = false;
 
-export default function ServicesPage() {
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: 'Services',
+    description:
+      'Eleven divisions under one roof: janitorial services, consulting, custom print, dispatching, car rentals, entertainment and more.',
+    alternates: { canonical: '/services' },
+  };
+}
+
+export default async function ServicesPage() {
+  const { divisions, dbAvailable } = await getPublicDivisions();
+
+  const priced = divisions.filter((division) => typeof division.price === 'number');
+
   return (
     <>
       <PageHero
@@ -30,13 +38,11 @@ export default function ServicesPage() {
           <dl className="space-y-5">
             <div className="flex items-baseline justify-between gap-6 border-b border-line pb-4">
               <dt className="overline text-stone">Divisions</dt>
-              <dd className="font-display text-3xl text-ivory tabular-nums">
-                {divisions.length}
-              </dd>
+              <dd className="font-display text-3xl text-ivory tabular-nums">{divisions.length}</dd>
             </div>
             <div className="flex items-baseline justify-between gap-6 border-b border-line pb-4">
-              <dt className="overline text-stone">Founded</dt>
-              <dd className="font-display text-3xl text-ivory">2011</dd>
+              <dt className="overline text-stone">With published rates</dt>
+              <dd className="font-display text-3xl text-ivory tabular-nums">{priced.length}</dd>
             </div>
             <div className="flex items-baseline justify-between gap-6">
               <dt className="overline text-stone">Coverage</dt>
@@ -46,7 +52,7 @@ export default function ServicesPage() {
         }
       />
 
-      {/* Editorial index */}
+      {/* Editorially ordered index — database content merged over the fallback. */}
       <section>
         <div className="mx-auto w-full max-w-[1536px] px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
           <RevealGroup className="border-t border-line" gap={0.05}>
@@ -94,7 +100,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Alternating editorial rows */}
+      {/* Editorial feature rows */}
       <section className="grain border-y border-line bg-surface">
         <div className="mx-auto w-full max-w-[1536px] px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
           <div className="space-y-6">
@@ -107,7 +113,7 @@ export default function ServicesPage() {
                   <div className="lg:col-span-5">
                     <DivisionPlate
                       name={division.name}
-                      index={`${String(i + 1).padStart(2, '0')}`}
+                      index={String(i + 1).padStart(2, '0')}
                       variant={i}
                       className="aspect-16/10 w-full lg:h-full lg:aspect-auto lg:min-h-64"
                     />
@@ -118,9 +124,9 @@ export default function ServicesPage() {
                       {division.name}
                     </h3>
                     <p className="mt-4 max-w-lg leading-relaxed text-stone">
-                      {division.description}
+                      {division.description || division.shortDescription}
                     </p>
-                    {division.price && (
+                    {typeof division.price === 'number' && (
                       <p className="mt-6 font-display text-3xl text-sand tabular-nums">
                         ${division.price}
                       </p>

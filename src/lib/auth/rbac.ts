@@ -11,6 +11,7 @@ export type Permission =
   | 'media:upload' | 'media:read' | 'media:update' | 'media:delete'
   | 'booking:read' | 'booking:update' | 'booking:note' | 'booking:export'
   | 'event:create' | 'event:read' | 'event:update' | 'event:delete' | 'event:publish'
+  | 'product:create' | 'product:read' | 'product:update' | 'product:delete' | 'product:publish'
   | 'faq:create' | 'faq:read' | 'faq:update' | 'faq:delete' | 'faq:publish'
   | 'testimonial:create' | 'testimonial:read' | 'testimonial:update' | 'testimonial:delete'
   | 'settings:read' | 'settings:update'
@@ -34,6 +35,7 @@ export const ROLE_PERMISSIONS: Record<string, Permission[]> = {
     'media:upload', 'media:read', 'media:update', 'media:delete',
     'booking:read', 'booking:update', 'booking:note', 'booking:export',
     'event:create', 'event:read', 'event:update', 'event:delete', 'event:publish',
+    'product:create', 'product:read', 'product:update', 'product:delete', 'product:publish',
     'faq:create', 'faq:read', 'faq:update', 'faq:delete', 'faq:publish',
     'testimonial:create', 'testimonial:read', 'testimonial:update', 'testimonial:delete',
     'settings:read', 'settings:update',
@@ -51,6 +53,7 @@ export const ROLE_PERMISSIONS: Record<string, Permission[]> = {
     'navigation:read', 'navigation:update', 'navigation:reorder',
     'media:upload', 'media:read', 'media:update',
     'event:read', 'event:update', 'event:publish',
+    'product:read', 'product:update', 'product:publish',
     'faq:read', 'faq:update', 'faq:publish',
     'testimonial:read', 'testimonial:update',
     'legal:read', 'legal:update',
@@ -63,7 +66,8 @@ export const ROLE_PERMISSIONS: Record<string, Permission[]> = {
     'service:read',
     'media:read',
     'booking:read', 'booking:update', 'booking:note', 'booking:export',
-    'event:read',
+'event:read',
+    'product:read',
     'faq:read',
     'settings:read',
   ],

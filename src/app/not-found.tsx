@@ -1,4 +1,13 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
+
+// With `cacheComponents` the static shell (header/footer) is committed with a
+// 200 before the page can throw, so a not-found page can still be served with
+// 200. Blocking indexing here prevents those responses entering search indexes.
+export const metadata: Metadata = {
+  title: 'Page not found',
+  robots: { index: false, follow: false },
+};
 
 const SUGGESTIONS = [
   { label: 'Services', href: '/services' },

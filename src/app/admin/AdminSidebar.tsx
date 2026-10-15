@@ -6,14 +6,14 @@ import { cn } from '@/lib/utils';
 import type { SessionContext } from '@/lib/auth/service';
 
 const navItems = [
-  { href: '/admin', label: 'Dashboard', icon: 'grid' },
+  { href: '/admin/dashboard', label: 'Dashboard', icon: 'grid' },
   { href: '/admin/businesses', label: 'Businesses', icon: 'building' },
   { href: '/admin/services', label: 'Services', icon: 'briefcase' },
-  { href: '/admin/bookings', label: 'Bookings', icon: 'clipboard' },
-  { href: '/admin/pages', label: 'Pages', icon: 'document' },
-  { href: '/admin/media', label: 'Media', icon: 'image' },
+  { href: '/admin/products', label: 'Products', icon: 'tag' },
   { href: '/admin/events', label: 'Events', icon: 'calendar' },
+  { href: '/admin/media', label: 'Media', icon: 'image' },
   { href: '/admin/faqs', label: 'FAQs', icon: 'question' },
+  { href: '/admin/team', label: 'Team', icon: 'users' },
   { href: '/admin/settings', label: 'Settings', icon: 'cog' },
 ];
 
@@ -42,6 +42,12 @@ const iconPaths: Record<string, React.ReactNode> = {
   question: (
     <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zm-1-5h2v2h-2v-2zm1-9a3 3 0 013 3c0 1.5-1 2-1.5 2.5-.3.3-.5.5-.5 1.5h-2c0-1.5.5-2 1-2.5.3-.3.7-.8.7-1.5a1 1 0 00-2 0H9a3 3 0 013-3z" />
   ),
+  tag: (
+    <path d="M20.6 13.4L12 22l-9-9V3h10l7.6 7.6a2 2 0 010 2.8zM7.5 8A1.5 1.5 0 1 0 7.5 5a1.5 1.5 0 000 3z" />
+  ),
+  users: (
+    <path d="M16 11a4 4 0 100-8 4 4 0 000 8zm-8 0a4 4 0 100-8 4 4 0 000 8zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5zm8 0c-.6 0-1.3.1-1.9.2 1.6 1.1 2.9 2.6 3.4 4.3.4-.9.5-1.9.5-2.9 0-1.5-1-1.6-2-1.6z" />
+  ),
   cog: (
     <path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9 4l-2 1.5.2 2.5-2.4.8-1 2.2-2.5-.3L12 21l-1.3-2.2-2.5.3-1-2.2-2.4-.8.2-2.5L3 12l2-1.5-.2-2.5 2.4-.8 1-2.2 2.5.3L12 3l1.3 2.2 2.5-.3 1 2.2 2.4.8-.2 2.5L21 12z" />
   ),
@@ -62,7 +68,7 @@ export function AdminSidebar({ session }: { session: SessionContext }) {
       <nav className="flex-1 p-4 space-y-1 overflow-auto">
         {navItems.map((item) => {
           const isActive = pathname === item.href ||
-            (item.href !== '/admin' && pathname.startsWith(item.href));
+            (item.href !== '/admin/dashboard' && pathname.startsWith(item.href));
 
           return (
             <Link

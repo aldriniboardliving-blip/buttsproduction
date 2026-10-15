@@ -1,14 +1,28 @@
 'use client';
 
-import { useState, useTransition, useCallback } from 'react';
+import { useCallback, useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card } from '@/components/ui/Card';
 import { searchMedia, getUploadSignature, confirmUpload, deleteMedia } from './actions';
-import { config } from '@/config/env';
 
-export function MediaLibrary() {
+/**
+ * Upload configuration arrives as props from the server page.
+ *
+ * Importing `@/config/env` here would pull the whole server-validated env
+ * module (Mongo URI, Cloudinary secret, session secret) into the browser
+ * bundle, so only the two non-secret values are ever handed to the client.
+ */
+export function MediaLibrary({
+  cloudName,
+  uploadFolder,
+  allowedTypes,
+}: {
+  cloudName: string;
+  uploadFolder: string;
+  allowedTypes: string[];
+}) {
   const router = useRouter();
   const [assets, setAssets] = useState<Array<{
     _id: string;
@@ -34,7 +48,13 @@ export function MediaLibrary() {
     setLoading(false);
   }, []);
 
-  useState(() => { loadAssets(1); });
+  useEffect(() => {
+    // Initial load. This is the intended use of an effect: synchronising with
+    // an external system (the media collection) on mount. The setState calls
+    // all happen after the awaited server action resolves.
+    // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks/exhaustive-deps
+    loadAssets(1);
+  }, []);
 
   async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -44,7 +64,7 @@ export function MediaLibrary() {
     setError('');
 
     try {
-      const folder = 'buttsproductions/admin/uploads';
+      const folder = uploadFolder;
       const sigResult = await getUploadSignature(folder);
 
       if (!sigResult.success) {
@@ -63,7 +83,7 @@ export function MediaLibrary() {
       formData.append('upload_preset', uploadPreset);
       formData.append('folder', folder);
 
-      const uploadUrl = `https://api.cloudinary.com/v1_1/${config.cloudinary.cloudName}/image/upload`;
+      const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
       const response = await fetch(uploadUrl, { method: 'POST', body: formData });
 
       if (!response.ok) {
@@ -112,7 +132,7 @@ export function MediaLibrary() {
         <div>
           <input
             type="file"
-            accept={config.upload.allowedTypes.join(',')}
+            accept={allowedTypes.join(',')}
             onChange={handleUpload}
             className="hidden"
             id="media-upload"

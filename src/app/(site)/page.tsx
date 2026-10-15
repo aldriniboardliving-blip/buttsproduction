@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { divisions } from '@/lib/divisions';
+import { getPublicDivisions } from '@/server/queries/divisions';
 import { SectionLabel } from '@/components/public/SectionLabel';
 import { Cta } from '@/components/public/Cta';
 import { DivisionPlate } from '@/components/public/DivisionPlate';
@@ -33,7 +33,10 @@ const FAQS = [
   },
 ];
 
-export default function HomePage() {
+export const instant = false;
+
+export default async function HomePage() {
+  const { divisions } = await getPublicDivisions();
   const featured = FEATURED.map((slug) => divisions.find((d) => d.slug === slug)!).filter(Boolean);
 
   return (

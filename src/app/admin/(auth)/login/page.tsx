@@ -53,7 +53,9 @@ function LoginForm() {
 
           <Input
             label="Email"
+            name="email"
             type="email"
+            id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -63,7 +65,9 @@ function LoginForm() {
 
           <Input
             label="Password"
+            name="password"
             type="password"
+            id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required

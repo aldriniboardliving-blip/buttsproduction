@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Dev-only tooling (mongo launcher, seed, e2e) is plain CommonJS.
+    "scripts/**",
   ]),
 ]);
 

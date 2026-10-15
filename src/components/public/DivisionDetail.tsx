@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import type { Division } from '@/lib/divisions';
-import { divisions } from '@/lib/divisions';
+import { divisions as fallbackDivisions, type Division } from '@/lib/divisions';
+import { getPublicDivisions } from '@/server/queries/divisions';
 import { Cta } from './Cta';
 import { DivisionPlate } from './DivisionPlate';
 import { SectionLabel } from './SectionLabel';
@@ -11,15 +11,20 @@ import { Reveal, RevealGroup, RevealItem } from '@/components/motion/Reveal';
  * One layout, two entry points, so a division page never drifts between
  * the services and businesses sections of the site.
  */
-export function DivisionDetail({
+export async function DivisionDetail({
   division,
-  index,
   context,
 }: {
   division: Division;
-  index: number;
   context: 'services' | 'businesses';
 }) {
+  // Resolved live so the "next" link and plate variant stay consistent with
+  // whatever the database currently holds, including newly created slugs.
+  const { divisions } = await getPublicDivisions();
+  const index = Math.max(
+    0,
+    divisions.findIndex((item) => item.slug === division.slug),
+  );
   const sibling = divisions[(index + 1) % divisions.length];
   const alternateContext = context === 'services' ? 'businesses' : 'services';
 
